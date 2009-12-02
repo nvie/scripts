@@ -1,8 +1,8 @@
 #!/bin/sh
 
 usage() {
-	echo "usage: sedfiles.sh <pattern> <file> [ <file2> ... ]"
-	#echo "usage: sedfiles.sh [-N] <pattern> <file> [ <file2> ... ]"
+	echo "usage: search-replace <pattern> <file> [ <file2> ... ]"
+	#echo "usage: search-replace [-N] <pattern> <file> [ <file2> ... ]"
 	echo ""
 	echo "Where <pattern> is a sed-compatible regex pattern."
 	#echo ""
@@ -10,27 +10,37 @@ usage() {
 	#echo "-N    Dry-run mode, show what will be renamed, but don't actually rename."
 }
 
+if [ $# -lt 2 ]; then
+	usage
+	exit 1
+fi
+
 VERBOSE=1
-DRYRUN=1
-#TODO: Get the dryrun-variable from the command line flags
-#for getopts...
+DRYRUN=0
+#TODO: Get the dryrun and verbose variables from the command line flags
 
 PATTERN="$1"
+shift 1
 
 # Loop over the files, replacing names
 for FILENAME in "$@"; do
-	echo "${FILENAME}"
-	continue
+	if [ -d "${FILENAME}" ]; then
+		echo "Skipping directory ${FILENAME}..." >&2
+		continue
+	fi
 
-	BACKUPFILE="${FILENAME}.backup"
-	rm "${BACKUPFILE}"
+	BACKUPFILE="__tmp-file.s+r"
+	rm -f "${BACKUPFILE}"
 
 	if [ ${VERBOSE} -eq 1 ]; then
-		echo "Processing file ${FILENAME}..."
+		echo "Processing file ${FILENAME}..." >&2
 	fi
-	if sed -e "${PATTERN}" < "${FILENAME}" > "${BACKUPFILE}"; then
-		echo "Error processing ${FILENAME}: not changed."
-	else
+
+	sed "${PATTERN}" "${FILENAME}" > "${BACKUPFILE}"
+
+	if [ ${DRYRUN} -eq 0 ]; then
 		mv "${BACKUPFILE}" "${FILENAME}"
+	else
+		rm "${BACKUPFILE}"
 	fi
 done
