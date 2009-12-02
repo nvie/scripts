@@ -9,4 +9,4 @@ shell scripts that I often use personally.
   remote counterpart.
 * **quote**: Quotes each line from stdin to stdout. Very useful when piping
   filenames with spaces into xargs.
-* **sedfiles.sh**: Batch change file names using a sed expression.
+* **search-replace**: Batch search and replace strings in a (series of) file(s).
