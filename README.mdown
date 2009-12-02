@@ -1,0 +1,12 @@
+Shell Scripts
+=============
+This repository contains of a collection of simple and small, but very useful
+shell scripts that I often use personally.
+
+* base64decode: decode BASE64 strings received from stdin.
+* base64encode: encode plain strings into BASE64 from stdin.
+* git-can-ff: determines if the current branch can fast-forward (ff) to its
+              remote counterpart.
+* quote: quotes each line from stdin to stdout. Very useful when piping
+         filenames with spaces into xargs.
+* sedfiles.sh: batch change file names using a sed expression.

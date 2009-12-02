@@ -1,0 +1,21 @@
+#!/bin/sh
+usage() {
+    echo "usage: $(basename $0) <from-ref> <to-ref>" >&2
+    exit 2
+}
+
+[ $# -ne 2 ] && usage
+
+FROM_REF=$1
+TO_REF=$2
+
+FROM_HASH=$(git show-ref --hash $FROM_REF)
+TO_HASH=$(git show-ref --hash $FROM_REF)
+BASE_HASH=$(git merge-base $FROM_REF $TO_REF)
+
+if [ "$BASE_HASH" = "$FROM_HASH" -o \
+     "$BASE_HASH" = "$FROM_REF" ]; then
+    exit 0
+else
+    exit 1
+fi
